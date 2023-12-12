@@ -1,3 +1,4 @@
+#pragma config(Sensor, dgtl2,  Relay,          sensorDigitalOut)
 #pragma config(Motor,  port1,           FR,            tmotorVex393_HBridge, openLoop, reversed, driveRight)
 #pragma config(Motor,  port2,           BR,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           Arm1,          tmotorVex393_MC29, openLoop)
@@ -14,18 +15,29 @@ task main()
     //Loops until the program is not running any more
     while (running)
     {
-        //Updates the front motors using the left joystick
-        motor[FL] = vexRT(Ch3);
-        motor[FR] = vexRT(Ch4);
 
-        //Updates the back motors using the right joystick
-        motor[BL] = vexRT(Ch2);
-        motor[BR] = vexRT(Ch1);
+      //Updates the values of the left mototrs
+    	motor[FL] = vexRT(Ch3);
+    	motor[BL] = vexRT(Ch3);
 
-        //Exits the program if both of the U sholder buttons are pressed
-        if (vexRT(Btn5U) == true && vexRT(Btn6U) == true)
-        {
-            running = false;
-        }
+    	//Updates the values of the right motors
+    	motor[FR] = vexRT(Ch2);
+    	motor[BR] = vexRT(Ch2);
+
+    	//Updates the relay state based on if the R button in area 8 is pressed
+      if(SensorValue(Btn8R) == true)
+      {
+      	SensorValue(Btn8R) = true;
+      }
+      else
+      {
+      	SensorValue(Btn8R) = false;
+      }
+
+      //Exits the program if both of the U sholder buttons are pressed
+      if (vexRT(Btn5U) == true && vexRT(Btn6U) == true)
+      {
+          running = false;
+      }
     }
 }
