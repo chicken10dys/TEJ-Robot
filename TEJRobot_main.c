@@ -1,4 +1,6 @@
 #pragma config(Sensor, dgtl2,  Relay,          sensorDigitalOut)
+#pragma config(Sensor, dgtl6,  RelayT,         sensorDigitalOut)
+#pragma config(Sensor, dgtl12, RelayN,         sensorDigitalOut)
 #pragma config(Motor,  port1,           FR,            tmotorVex393_HBridge, openLoop, reversed, driveRight)
 #pragma config(Motor,  port2,           BR,            tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           Arm1,          tmotorVex393_MC29, openLoop)
@@ -9,7 +11,6 @@
 
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
 #define MAX(i, j) (((i) > (j)) ? (i) : (j))
-
 
 //Stores the state of the program
 bool running = true;
@@ -95,16 +96,21 @@ task main()
 
     //////////////////////////////////
 
-      if(SensorValue(Btn8R) == true)
+      if(SensorValue(Btn8R) == true && isRelayOn == false)
       {
       	isRelayOn = true;
+      	SensorValue[RelayN] = 0;
       }
-      else
+      else if (SensorValue(Btn8R) == false && isRelayOn == true)
       {
+      	SensorValue[RelayN] = 1;
       	isRelayOn = false;
       }
 
-      SensorValue(Btn8R) = isRelayOn;
+      //SensorValue[RelayT] = 1;
+      //wait1Msec(1000);
+      //SensorValue[RelayT] = 0;
+      //wait1Msec(1000);
 
 
       //Exits the program if both of the U sholder buttons are pressed
