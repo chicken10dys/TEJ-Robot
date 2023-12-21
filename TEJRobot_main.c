@@ -32,6 +32,8 @@ short deadZn = 5;
 
 task main()
 {
+		SensorValue[RelayN] = 1;
+
     //Loops until the program is not running any more
     while (running)
     {
@@ -96,7 +98,7 @@ task main()
 
     //////////////////////////////////
 
-      if(SensorValue(Btn8R) == true && isRelayOn == false)
+      /*if(SensorValue(Btn8R) == true && isRelayOn == false)
       {
       	isRelayOn = true;
       	SensorValue[RelayN] = 0;
@@ -105,8 +107,13 @@ task main()
       {
       	SensorValue[RelayN] = 1;
       	isRelayOn = false;
-      }
+      }*/
 
+      if(vexRT(Btn8L) == true)
+      {
+      	SensorValue[RelayN] = 0;
+      }
+      
       //SensorValue[RelayT] = 1;
       //wait1Msec(1000);
       //SensorValue[RelayT] = 0;
