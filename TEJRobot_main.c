@@ -1,3 +1,4 @@
+#pragma config(Sensor, dgtl5,  LimSwitch,      sensorDigitalIn)
 #pragma config(Sensor, dgtl12, RelayN,         sensorDigitalOut)
 #pragma config(Motor,  port1,           FR,            tmotorVex393_HBridge, openLoop, reversed, driveRight)
 #pragma config(Motor,  port2,           BR,            tmotorVex393_MC29, openLoop, reversed)
@@ -31,6 +32,13 @@ short diry = 0;
 short Ls = 0;
 short Rs = 0;
 
+//State of the relay
+bool relayState = false;
+
+bool relayBtnState = false;
+bool prevRelayBtnState = false;
+
+bool needNewRelayInput = false;
 
 void MoveRobot()
 {
@@ -104,11 +112,40 @@ task main()
 		//Moves the robot using the joystick
 		MoveRobot();
 
-		if(vexRT(Btn8L) == true && SensorValue[RelayN] == HIGH)
+		prevRelayBtnState = relayBtnState;
+		relayBtnState = vexRT(Btn8L);
+
+
+		if(relayState == false)
+		{
+			if(relayBtnState == true && needNewRelayInput == false)
+			{
+				relayState = true;
+			}
+			else if(needNewRelayInput == true && (relayBtnState == true && prevRelayBtnState == false))
+			{
+				relayState = true;
+			}
+		}
+		else
+		{
+			if(SensorValue[LimSwitch] == LOW)
+			{
+				relayState = false;
+				needNewRelayInput = true;
+			}
+			else if(relayBtnState == false)
+			{
+				relayState = false;
+			}
+		}
+
+
+		if(relayState == true)
 		{
 			SensorValue[RelayN] = LOW;
 		}
-		else if(vexRT(Btn8L) == false && SensorValue[RelayN] == LOW)
+		else
 		{
 			SensorValue[RelayN] = HIGH;
 		}
