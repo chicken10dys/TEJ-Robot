@@ -35,18 +35,21 @@ short Rs = 0;
 //State of the relay
 bool relayState = false;
 
+//Stores the state and previous state of the button used for activating the relay
 bool relayBtnState = false;
 bool prevRelayBtnState = false;
 
+//Represents if a new button input is required to activate the
 bool needNewRelayInput = false;
 
+//Moves the robot using the left joystick
 void MoveRobot()
 {
 	//Gets the direction of the vertical and horizontal axis of the left joystick
 	dirx = vexRT(Ch4);
 	diry = vexRT(Ch3);
 
-
+	//Checks where the joystic is and changes the speed of the motors accordingly
 	if(-DEAD_ZONE <= dirx && dirx <= DEAD_ZONE && -DEAD_ZONE <= diry && diry <= DEAD_ZONE)
 	{
 		//Sets the values of the motors to 0 if the stick is within the range of the dead zone
@@ -55,55 +58,60 @@ void MoveRobot()
 	}
 	else if (dirx == 0 && diry == MAX_DIR)
 	{
+		//Moves both sides of the robot forward at max speed
 		Rs = MAX_DIR;
 		Ls = MAX_DIR;
 	}
 	else if (dirx == MIN_DIR && diry == 0)// add deadzone
 	{
+		//Moves the right side forward at max speed and the left side backwards at max speed
 		Rs = MAX_DIR;
 		Ls = MIN_DIR;
 	}
 	else if (dirx == 0 && diry == MIN_DIR)
 	{
+		//Moves both sides of the robot bakcwards at max speed
 		Rs = MIN_DIR;
 		Ls = MIN_DIR;
 	}
 	else if (dirx == MAX_DIR && diry == 0)
 	{
+		//Moves the right side backwards at max speed and the left side forwards at max speed
 		Rs = MIN_DIR;
 		Ls = MAX_DIR;
 	}
 	else
 	{
-		//Q1
+		//Calculates the speed of the motors based on the joystick being in quadrent 1
 		if (diry > 0 && dirx > 0){
 			Rs = MAX(dirx, diry);
 			Ls = diry - dirx;
 		}
-		//Q2
+		//Calculates the speed of the motors based on the joystick being in quadrent 2
 		if (diry > 0 && dirx < 0){
 			Rs = diry + dirx;
 			Ls = MAX(dirx, diry);
 		}
-		//Q3
+		//Calculates the speed of the motors based on the joystick being in quadrent 3
 		if (diry < 0 && dirx < 0){
 			Ls = MIN(dirx, diry);
 			Rs = diry - dirx;
 		}
-		//Q4
+		//Calculates the speed of the motors based on the joystick being in quadrent 4
 		if (diry < 0 && dirx > 0){
-			//
 			Rs = MIN(dirx, diry);
 			Ls = dirx + diry;
 		}
 	}
 
+	//Sets the speed of all four motors
 	motor[FL] = Ls;
 	motor[BL] = Ls;
 	motor[FR] = Rs;
 	motor[BR] = Rs;
 }
 
+//The entry point of the program
 task main()
 {
 	//Loops until the program is not running any more
@@ -112,17 +120,19 @@ task main()
 		//Moves the robot using the joystick
 		MoveRobot();
 
+		//Updates the current and previous state of the relay button
 		prevRelayBtnState = relayBtnState;
 		relayBtnState = vexRT(Btn8L);
 
-
+		//Updates the relay state based on if it is already active
 		if(relayState == false)
 		{
-			if(relayBtnState == true && needNewRelayInput == false)
-			{
-				relayState = true;
-			}
-			else if(needNewRelayInput == true && (relayBtnState == true && prevRelayBtnState == false))
+			/*
+			Turns on the relay if the button is held and it does not need a new input,
+			or if a new button press was made and a new button press is required
+			*/
+			if((relayBtnState == true && needNewRelayInput == false) ||
+				(needNewRelayInput == true && (relayBtnState == true && prevRelayBtnState == false)))
 			{
 				relayState = true;
 			}
@@ -140,7 +150,7 @@ task main()
 			}
 		}
 
-
+		//Sets the value of the relay based on the state
 		if(relayState == true)
 		{
 			SensorValue[RelayN] = LOW;

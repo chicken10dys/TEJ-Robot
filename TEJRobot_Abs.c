@@ -10,6 +10,7 @@
 //Stores the state of the program
 bool running = true;
 
+//Represents if the relay is on
 bool isRelayOn = false;
 
 //Stores the movement value for the left and right motors
@@ -18,16 +19,17 @@ short diry = 0;
 short Ls = 0;
 short Rs = 0;
 
+//The entry point of the program
 task main()
 {
     //Loops until the program is not running any more
     while (running)
     {
-
+			//Updates the x and y direction of the left joystic
     	dirx = vexRT(Ch4);
     	diry = vexRT(Ch3);
 
-    //Q1
+    //Movement for joystic in quadrent 1
     if (diry > 0 && dirx > 0)
     {
 	    if(diry >= dirx)
@@ -41,7 +43,7 @@ task main()
 	    	Rs = -abs(dirx/diry *10);
 	    }
 	   }
-	   //Q2
+	   //Movement for joystic in quadrent 2
 	   if (diry > 0 && dirx < 0)
 	   {
 	    	if(diry >= dirx)
@@ -55,10 +57,10 @@ task main()
 	    		Rs = abs(dirx/diry *10);
 	    	}
 	    }
-	    //Q4
+	    //Movement for joystic in quadrent 1
 	    if (diry < 0 && dirx > 0)
 	    {
-
+				//Movement based on if the y direction is greater than or equal to the x direction, or less than x
 	    	if(abs(diry) >= dirx)
 	    	{
 	    		Ls = -abs(dirx/diry*10);
@@ -70,56 +72,60 @@ task main()
 	    		Rs = -abs(diry/dirx*10);
 	    	}
     	}
-    //Q3
-    if (diry < 0 && dirx < 0){
 
-    if(abs(diry) >= dirx)
+    //Movement for joystic in quadrent 1
+    if (diry < 0 && dirx < 0)
     {
-    Ls = -abs(diry/dirx*10);
-    Rs = -abs(dirx/diry*10);
-    }
-    else
-    {
-    Ls = abs(diry/dirx*10);
-    Rs = -abs(dirx/diry*10);
-    }
-    }
-    //y = 0
-    if (diry == 0)
-    {
-    Rs = dirx;
-    Ls = -Rs;
-    }
-    //x = 0
-    if (dirx == 0)
-    {
-    Rs = diry;
-    Ls = Rs;
+    	//Movement based on if the y direction is greater than or equal to the x direction, or less than x
+	    if(abs(diry) >= dirx)
+	    {
+		    Ls = -abs(diry/dirx*10);
+		    Rs = -abs(dirx/diry*10);
+		  }
+		  else
+		  {
+		   	Ls = abs(diry/dirx*10);
+		    Rs = -abs(dirx/diry*10);
+		  }
+	  }
+
+	  //Sets the speed if the x direaction is 0
+	  if (diry == 0)
+	  {
+	  	Rs = dirx;
+	    Ls = -Rs;
+	  }
+
+	  //Sets the speed if the x direaction is 0
+	  if (dirx == 0)
+	  {
+	  	Rs = diry;
+	    Ls = Rs;
     }
 
+    //Updates all four motors
     motor[FL] = Ls;
     motor[BL] = Ls;
     motor[FR] = Rs;
     motor[BR] = Rs;
 
-    //////////////////////////////////
-
-      if(SensorValue(Btn8R) == true)
-      {
+    //Toggles the relay state based on if the 8R button is pressed
+    if(SensorValue(Btn8R) == true)
+    {
       isRelayOn = true;
-      }
-      else
-      {
-      isRelayOn = false;
-      }
-
-      SensorValue(Btn8R) = isRelayOn;
-
-
-      //Exits the program if both of the U sholder buttons are pressed
-      if (vexRT(Btn5U) == true && vexRT(Btn6U) == true)
-      {
-          running = false;
-      }
     }
+    else
+    {
+      isRelayOn = false;
+    }
+
+    //Sets the new value of the relay
+    SensorValue(Btn8R) = isRelayOn;
+
+    //Exits the program if both of the U sholder buttons are pressed
+    if (vexRT(Btn5U) == true && vexRT(Btn6U) == true)
+    {
+    	running = false;
+    }
+   }
 }

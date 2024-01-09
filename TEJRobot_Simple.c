@@ -15,7 +15,6 @@ task main()
     //Loops until the program is not running any more
     while (running)
     {
-
       //Updates the values of the left mototrs
     	motor[FL] = vexRT(Ch3);
     	motor[BL] = vexRT(Ch3);
