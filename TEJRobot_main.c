@@ -72,6 +72,8 @@ void MoveRobot()
 	else if (dirx == MIN_DIR && diry == 0)// add deadzone
 	{
 		//Moves the right side forward at max speed and the left side backwards at max speed
+		/*Rs = MAX_DIR;
+		Ls = MIN_DIR;*/
 		Rs = MAX_DIR;
 		Ls = MIN_DIR;
 	}
@@ -84,30 +86,30 @@ void MoveRobot()
 	else if (dirx == MAX_DIR && diry == 0)
 	{
 		//Moves the right side backwards at max speed and the left side forwards at max speed
-		Rs = MIN_DIR;
-		Ls = MAX_DIR;
+		Rs = MAX_DIR;
+		Ls = MIN_DIR;
 	}
 	else
 	{
 		//Calculates the speed of the motors based on the joystick being in quadrent 1
 		if (diry > 0 && dirx > 0){
-			Rs = MAX(dirx, diry);
-			Ls = diry - dirx;
+			Rs = diry - dirx;
+			Ls = MAX(dirx, diry);
 		}
 		//Calculates the speed of the motors based on the joystick being in quadrent 2
 		if (diry > 0 && dirx < 0){
-			Rs = diry + dirx;
-			Ls = MAX(dirx, diry);
+			Rs = MAX(dirx, diry);
+			Ls = diry + dirx;
 		}
 		//Calculates the speed of the motors based on the joystick being in quadrent 3
 		if (diry < 0 && dirx < 0){
-			Ls = MIN(dirx, diry);
-			Rs = diry - dirx;
+			Ls = diry - dirx;
+			Rs = MIN(dirx, diry);
 		}
 		//Calculates the speed of the motors based on the joystick being in quadrent 4
 		if (diry < 0 && dirx > 0){
-			Rs = MIN(dirx, diry);
-			Ls = dirx + diry;
+			Rs = dirx + diry;
+			Ls = MIN(dirx, diry);
 		}
 	}
 
